@@ -14,7 +14,7 @@ Dispose
 // Use one stream controller for input as Sink and
 // other stream controller for collect Stream
 
-class MessageBloc implements BlocBase
+class MessageBloc
 {
   // StreamController
   final StreamController<String> _inputStreamController = StreamController();

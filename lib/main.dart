@@ -1,17 +1,19 @@
-import 'package:bloc_pattern_sample/bloc_provider.dart';
-import 'package:bloc_pattern_sample/message_bloc.dart';
 import 'package:bloc_pattern_sample/page_four.dart';
 import 'package:bloc_pattern_sample/page_one.dart';
 import 'package:bloc_pattern_sample/page_three.dart';
 import 'package:bloc_pattern_sample/page_two.dart';
+import 'package:bloc_pattern_sample/second_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/NewMessageBloc.dart';
 
 
 // To avoid null on custom bloc
 Future<void> main() async {
   return runApp(
-      BlocProvider<MessageBloc>(
-        bloc: MessageBloc(),
+      BlocProvider(
+        create: (context) => NewMessageBloc(),
         child: MyApp(),
       )
   );
@@ -21,8 +23,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    MessageBloc messageBloc = BlocProvider.of<MessageBloc>(context);
 
     return MaterialApp(
         title: 'Flutter Demo',
@@ -42,26 +42,14 @@ class MyApp extends StatelessWidget {
           // closer together (more dense) than on mobile platforms.
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: MyHomePage(title: 'Bloc Pattern', messageBloc: messageBloc,),
+        home: MyHomePage(title: 'Bloc Pattern'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title, this.messageBloc}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
-  final MessageBloc messageBloc;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -70,18 +58,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          RaisedButton(onPressed: ()=>{
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return BlocProvider.value(
+                value: BlocProvider.of<NewMessageBloc>(context),
+                child: SecondPage());
+          }))
+          },
+          child: Text('Next'),)
+        ],
       ),
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,17 +85,17 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(flex: 1,child: Row(
               children: [
                 Expanded(flex : 1,
-                    child: PageOne(widget.messageBloc)),
+                    child: PageOne()),
                 Expanded(flex : 1,
-                    child: PageTwo(widget.messageBloc))
+                    child: PageTwo())
               ],
             )),
             Expanded(flex: 1,child: Row(
               children: [
                 Expanded(flex : 1,
-                    child: PageThree(widget.messageBloc)),
+                    child: PageThree()),
                 Expanded(flex : 1,
-                    child: PageFour(widget.messageBloc)),
+                    child: PageFour()),
               ],
             ))
           ],

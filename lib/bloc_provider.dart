@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 
 
@@ -20,7 +21,7 @@ class BlocProvider<T extends BlocBase> extends StatefulWidget {
 
   static T of<T extends BlocBase>(BuildContext context){
     final type = _typeOf<BlocProvider<T>>();
-    BlocProvider<T> provider = context.ancestorWidgetOfExactType(type);
+    BlocProvider<T> provider = context.findAncestorWidgetOfExactType<type>();
     return provider.bloc;
   }
 
@@ -38,4 +39,4 @@ class _BlocProviderState<T> extends State<BlocProvider<BlocBase>>{
   Widget build(BuildContext context){
     return widget.child;
   }
-}
+}*/

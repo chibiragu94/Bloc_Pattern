@@ -2,16 +2,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc_provider.dart';
-import 'message_bloc.dart';
+import 'bloc/NewMessageBloc.dart';
+import 'bloc/messagebloc_event.dart';
+import 'bloc/messagebloc_state.dart';
 
 class PageThree extends StatefulWidget
 {
-  final MessageBloc messageBloc;
-
-  PageThree(this.messageBloc);
-
     @override
     _MyPageThreeState createState() => _MyPageThreeState();
 }
@@ -19,40 +17,26 @@ class PageThree extends StatefulWidget
 class _MyPageThreeState extends State<PageThree> {
 
   @override
-  void dispose() {
-    widget.messageBloc.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-
-    return BlocProvider<MessageBloc>(
-      bloc: widget.messageBloc,
-      child: Container(
-        color: Colors.redAccent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StreamBuilder<String>(
-              stream: widget.messageBloc.valueStream,
-              initialData: "inital_data on page one",
-              builder: (context, snapshot) {
-
-                if(null != snapshot.data)
-                  return Text(snapshot.data);
-
-                if(snapshot.hasError)
-                  return Text('Error');
-
-                return Text('wait');
-              },
-            ),
-            RaisedButton(onPressed: () => {
-              widget.messageBloc.valueSink.add("Three")
-            },
-              child: Text('3'),)
-          ],
-        ),
+    return Container(
+      color: Colors.redAccent,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BlocBuilder<NewMessageBloc, MessageState>(
+              builder: (context, state) {
+                if(state is RecevieMessage)
+                {
+                  return Text(state.message);
+                }
+                return Text("Empty");
+              }
+          ),
+          RaisedButton(onPressed: () => {
+            BlocProvider.of<NewMessageBloc>(context).add(SendMessage("Three"))
+          },
+            child: Text('3'),)
+        ],
       ),
     );
   }
